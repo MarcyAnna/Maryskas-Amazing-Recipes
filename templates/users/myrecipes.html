@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+
+
+{% block content %}
+
+<h1>{{ user.username }}</h1>
+
+{% if user.recipes %}
+{% for recipe in user.recipes %}
+<p>{{ recipe.name }}</p>
+{% endfor %}
+{% endif %}
+
+{% if user.categories %}
+{% for category in user.categories %}
+<p>{{ category.name }}</p>
+{% endfor %}
+{% endif %}
+
+<a href='/addcategory'>Create New Category</a>
+
+{% endblock %}

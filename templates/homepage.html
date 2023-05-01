@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+
+
+{% block content %}
+
+
+<h1>Search for a recipe...
+    {% if user %}
+    {{ user.username }}
+    {% endif %}
+</h1>
+{% for message in get_flashed_messages() %}
+<h2 class="text-danger">{{ message }}</h2>
+{% endfor %}
+<form action='/result'>
+<div class='mb-4'>
+    <label for='recipe'>What would you like a recipe for?</label>
+    <input type='text' name='recipe' placeholder="search for...">
+</div>
+<div class='mb-4'>
+    <label for='diet'>Choose a specialized diet:</label>
+<select id='diet' name='diet'>
+    <option value="none">None</option>
+    <option value="gluten-free">Gluten Free</option>
+    <option value="ketogenic">Keto</option>
+    <option value="Vegetarian">Vegetarian</option>
+    <option value="vegan">Vegan</option>
+    <option value="paleo">Paleo</option>
+    <option value="low-fodmap">Low FODMAP</option>
+</select>
+</div>
+<div class='mb-3'>
+    <button class='btn btn-primary'>Submit</button>
+</div>
+</form>
+{% if recipe_title %}
+<p>{{ recipe_title }}</p>
+<img src="{{ recipe_image }}" alt="recipe image">
+<p>{{ recipe_image }}</p>
+<form action='/saverecipe'>
+    <button class='btn btn-primary'>Save Recipe</button>
+</form>
+{% endif %}
+{% endblock %}

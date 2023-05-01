@@ -1,2 +1,4 @@
 venv/
 secretkey.py
+__pycache__
+.DS_Store

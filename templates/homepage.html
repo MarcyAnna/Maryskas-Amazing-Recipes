@@ -5,11 +5,13 @@
 {% block content %}
 
 
-<h1>Search for a recipe...
-    {% if user %}
-    {{ user.username }}
-    {% endif %}
+<h1>Recipe Search
 </h1>
+<hr>
+<h3>Find recipes to fit your lifestyle and diet!</h3>
+<h5>Are you looking for an easy dinner?</h5>
+<p> Or perhaps trying out a Keto diet and need some ideas? Maybe find something to do with that random eggplant?</p>
+<h5>Find them all here!</h5>
 {% for message in get_flashed_messages() %}
 <h2 class="text-danger">{{ message }}</h2>
 {% endfor %}
@@ -31,15 +33,14 @@
 </select>
 </div>
 <div class='mb-3'>
-    <button class='btn btn-primary'>Submit</button>
+    <button class='btn btn-success btn-sm'>Submit</button>
 </div>
 </form>
 {% if recipe_title %}
 <p>{{ recipe_title }}</p>
 <img src="{{ recipe_image }}" alt="recipe image">
-<p>{{ recipe_image }}</p>
 <form action='/saverecipe'>
-    <button class='btn btn-primary'>Save Recipe</button>
+    <button class='btn btn-secondary btn-sm'>Save Recipe</button>
 </form>
 {% endif %}
 {% endblock %}

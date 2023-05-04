@@ -5,9 +5,16 @@
 {% block content %}
 
 <h1>{{ recipe_title }}</h1>
-<h2>{{ recipe_id }}</h2>
+<hr>
+{% for ingredient in ingredients %}
+<ul>
+    <li>{{ ingredient }}</li>
+</ul>
+{% endfor %}
+<h4>See full recipe at <a href="https://{{ sourceUrlSplit }}" target="_blank">{{ sourceUrl }}</a></h4>
+<h5>Calories per serving: {{ cal }}</h5>
 
 
-<a href='/'>Home</a>
+<a href='/user'>Back</a>
 
 {% endblock %}

@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+
+
+{% block content %}
+<h1>Calorie Calculator</h1>
+<p>Let's figure out how many calories you need each day to maintain your current weight at your current activity level.
+</p>
+<h5>First Calculate Your BMR</h5>
+<p>This is your Basal Metabolic Rate, the amount of calories your body needs to keep functioning. </p>
+<form action="" id="calc-cal">
+    Sex:
+    <select id="sex">
+        <option value="Male">Male
+        <option value="Female">Female
+    </select>
+    <h5>Select</h5>
+    <label for="wtinlb">weight in lb</label>
+    <input type="number" id="wtinlb">
+    <label for="wtinkg" id="wtinkg">OR weight in kg</label>
+    <input type="number" id="wtinkg">
+    <label for="htinIn" id="htinIn">height in inches</label>
+    <input type="number" id="htinIn">
+    <label for="htincm" id="htincm">OR height in cm</label>
+    <input type="number" id="htincm">
+    <p>Age</p>
+    <input type="number" id="age">
+
+    <button class='btn btn-secondary btn-sm' type="submit">Submit</button>
+</form>
+
+<p id="answer"></p>
+<h5>Now Factor Activity Level</h5>
+<p>This is the amount of calories you burn if you maintain your current average activity level.</p>
+<form id="active-level">
+    <select>
+        <option value="Sedentary">Sedentary(little or no exercise)
+        <option value="Light">Lightly Active(light exercise/sports 1-3 days/week)
+        <option value="Moderate">Moderately Active(moderate exercise/sports 3-5 days/week)
+        <option value="Very">Very Active(hard exercise/sports 6-7 days/week)
+        <option value="Extra">Extra Active(very hard exercise/sports and a physical job)
+    </select>
+    <button class='btn btn-secondary btn-sm' type="submit">Submit</button>
+</form>
+
+<p id="calories"></p>
+
+<form action='/{{ user.id }}/savecalories'>
+    <button class='btn btn-secondary btn-sm'>Save Calories To My Page</button>
+</form>
+<a href='/'>Home</a>
+
+{% endblock %}

@@ -1,23 +1,66 @@
 {% extends 'base.html' %}
 
-
-
 {% block content %}
 
-<h1>{{ user.username }}</h1>
+<div class="container">
+    <div class="row">
+        <div class="col" id="user-name">
+            <h1 class="fw-bold">{{ user.username }}</h1>
+        </div>
+        <div class="col" id="cal-calc">
+            <a href="/calories">Factor Your Daily Caloric Needs</a>
+            {% if user.daily_kcal %}
+            <p>Your recommended daily calories: {{ user.daily_kcal }}</p>
+            {% endif %}
+        </div>
 
-{% if user.recipes %}
-{% for recipe in user.recipes %}
-<p>{{ recipe.name }}</p>
-{% endfor %}
-{% endif %}
+        <hr>
+        <div class="container">
+            <div class="row">
 
-{% if user.categories %}
-{% for category in user.categories %}
-<p>{{ category.name }}</p>
-{% endfor %}
-{% endif %}
+                <div class="col" id="my-recipes">
+                    <h4 class="fw-bolder">My Recipes</h4>
+                    {% if user.recipes %}
+                    {% for recipe in user.recipes %}
+                    <a href="/{{ recipe.id }}">
+                        <p>{{ recipe.name }}</p>
+                    </a>
 
-<a href='/addcategory'>Create New Category</a>
+                    {% endfor %}
+                    {% endif %}
+                </div>
 
-{% endblock %}
+                <div class="col" id="my-categories">
+                    <h4 class="fw-bolder">My Categories</h4>
+                    {% if user.categories %}
+                    {% for category in user.categories %}
+                    <h5 class="text-decoration-underline">{{ category.name }}</h5>
+                    {% for recipe in user.recipes %}
+                    {% if category.id == recipe.category_id %}
+                    <a href="/{{ recipe.id }}">
+                        <p>{{ recipe.name }}</p>
+                    </a>
+                    {% endif %}
+                    {% endfor %}
+                    <form action='/{{ category.id }}/addrecipe'>
+                        <select id="recipe_cat" name="recipe_cat">
+                            {% for recipe in user.recipes %}
+                            <option value="{{ recipe.id }}">{{ recipe.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <button class='btn btn-secondary btn-sm'>Submit</button>
+                    </form>
+                    <form id="delete_category" method="POST" action="/{{ category.id }}/delete">
+                        <p class="text-danger" onclick="deleteCategory()"><i class="fa fa-trash"
+                                aria-hidden="true">Warning:
+                                Recipes in category will also be deleted</i>
+                        </p>
+                    </form>
+                    {% endfor %}
+                    {% endif %}
+                    <a href='/addcategory'>Create New Category</a>
+                </div>
+            </div>
+        </div>
+
+        {% endblock %}

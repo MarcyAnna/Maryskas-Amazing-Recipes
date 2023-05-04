@@ -1,6 +1,7 @@
 from flask import Flask, redirect, render_template, request, session, g, flash
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
+from flask_migrate import Migrate
 
 from forms import UserAddForm, LoginForm, CreateCategory
 from models import db, connect_db, User, Recipe, Category, Rating
@@ -9,7 +10,7 @@ from secretkey import API_SECRET_KEY
 
 import requests 
 
-API_BASE_URL = "https://api.spoonacular.com/recipes/complexSearch"
+API_BASE_URL = "https://api.spoonacular.com/recipes"
 
 apiKey = API_SECRET_KEY
 
@@ -25,23 +26,25 @@ app.config['SECRET_KEY'] = "1234567890"
 toolbar = DebugToolbarExtension(app)
 
 connect_db(app)
+migrate = Migrate(app, db)
 
+# homepage/search routes
 @app.route('/')
 def homepage():
+    """Show Homepage"""
 
     if 'curr_user' in session:
         user = User.query.get(session['curr_user'])
 
     else:
-        user = None 
-
-    
+        user = None    
 
     return render_template("homepage.html", user=user)
 
 
 @app.route('/result')
 def show_recipe():
+    """show recipe search result"""
 
     if 'curr_user' in session:
         user = User.query.get(session['curr_user'])
@@ -49,21 +52,20 @@ def show_recipe():
     else:
         user = None 
 
-
     recipe = request.args['recipe']
     diet = request.args['diet']
-    res = requests.get(f"{API_BASE_URL}", params={'apiKey': apiKey, 'query': recipe, 'diet': diet, 'instructionsRequired': True, 'number': 1})
+    res = requests.get(f"{API_BASE_URL}/complexSearch", params={'apiKey': apiKey, 'query': recipe, 'diet': diet, 'instructionsRequired': True, 'number': 1})
     data = res.json()
     session['curr_recipe'] = data
     recipe_title = data["results"][0]["title"]
     recipe_id = data["results"][0]["id"]
     recipe_image = data["results"][0]["image"]
     
-
     return render_template('homepage.html', recipe_title = recipe_title, recipe_id = recipe_id, recipe_image = recipe_image, user = user)
 
 @app.route('/saverecipe')
 def save_recipe():
+    """Save recipe to user page if user logged in"""
 
     if 'curr_user' in session:
         user = User.query.get(session['curr_user'])
@@ -81,10 +83,20 @@ def save_recipe():
         flash('Please Login To Save Recipe!')
         return render_template('homepage.html')
 
-# User routes
+# @app.route('/<int:recipe_id>/delete', methods=['POST'])
+# def delete_recipe(recipe_id):
+#     """User delete recipe"""
 
+#     recipe = Recipe.query.get(recipe_id)
+#     db.session.delete(recipe)
+#     db.session.commit()
+
+#     return redirect("/user")
+
+# User routes
 @app.route('/signup', methods=["GET", "POST"])
 def signup():
+    """New User Sign Up"""
     
 
     form = UserAddForm()
@@ -102,8 +114,6 @@ def signup():
             return render_template('users/new.html', form=form)
         
         session['curr_user'] = user.id
-
-
         return redirect("/")
 
     else:
@@ -111,6 +121,7 @@ def signup():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    """Log in to User account"""
 
     form = LoginForm()
 
@@ -120,10 +131,12 @@ def login():
             session['curr_user'] = user.id
             return redirect('/')
 
+        flash("Invalid Username/Password", "danger")
     return render_template('users/login.html', form=form)
 
 @app.route('/logout')
 def logout():
+    """Log out of user account"""
 
     if 'curr_user' in session:
         del session['curr_user']
@@ -137,8 +150,18 @@ def user_page():
 
     return render_template('users/myrecipes.html', user=user)
 
+@app.route('/calories')
+def calc_cal():
+    """User can factor daily calorie needs"""
+
+    user = User.query.get(session['curr_user'])
+
+    return render_template("caloriecalculator.html", user=user)
+
+# recipe/category routes
 @app.route('/addcategory', methods=['GET', 'POST'])
 def new_category():
+    """User add new category to account"""
 
     form = CreateCategory()
     user = User.query.get(session['curr_user'])
@@ -154,6 +177,61 @@ def new_category():
 
     return render_template('category.html', form=form, user=user)
 
-    
+@app.route('/<int:category_id>/delete', methods=['POST'])
+def delete_category(category_id):
+    """User delete category"""
+
+    cat = Category.query.get(category_id)
+    db.session.delete(cat)
+    db.session.commit()
+
+    return redirect("/user")
+
+@app.route('/<int:category_id>/addrecipe', methods=['GET', 'POST'])
+def add_recipe_to_cat(category_id):
+    """add recipe to a category"""
+
+    user = User.query.get(session['curr_user'])
+    cat = Category.query.get(category_id)
+    recipe_id = request.args.get('recipe_cat')
+    recipe = Recipe.query.get(recipe_id)
+    recipe.id = recipe.id
+    recipe.name = recipe.name
+    recipe.user_id = recipe.user_id
+    recipe.category_id = category_id
+    db.session.add(recipe)
+    db.session.commit()
+
+    return redirect('/user')
+
+
+@app.route('/<int:recipe_id>')
+def view_recipe(recipe_id):
+    """View Recipe details"""
+
+    user = User.query.get(session['curr_user'])
+    recipe_id = recipe_id
+    res = requests.get(f"{API_BASE_URL}/{recipe_id}/information", params={"apiKey": apiKey, "includeNutrition": True})
+    data = res.json()
+    ingredients = parse_ingredients(data)
+    recipe_title = data["title"]
+    cal = data["nutrition"]["nutrients"][0]["amount"]
+    sourceUrl = data["sourceUrl"]
+    sourceUrlSplit = sourceUrl[7:]
+    sourceName = data["sourceName"]
+
+    return render_template("recipe.html", recipe_title=recipe_title, cal=cal, ingredients=ingredients, sourceUrl=sourceUrl, sourceUrlSplit=sourceUrlSplit, sourceName=sourceName, user=user, recipe_id=recipe_id)
+
+
+#stand-alone functions
+def parse_ingredients(data):
+    """Parse ingredients by name"""
+    listIngredients = []
+    for x in range( len(data["extendedIngredients"])):
+        original = data["extendedIngredients"][x]["original"]
+        listIngredients.append(original)
+
+    return(listIngredients)
+
 
 

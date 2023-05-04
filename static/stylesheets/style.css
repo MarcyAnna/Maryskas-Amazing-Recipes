@@ -1,0 +1,89 @@
+
+body {
+    background-color: #efeddc;
+}
+
+.navbar {
+    background-color: #dfdbb9;
+    padding: 10px 30px 10px;
+}
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 2rem;
+    padding:10px;
+}
+
+.navbar-brand:hover {
+    background-color: lightgrey;
+}
+
+.nav-item {
+    font-size: 1.3rem;
+}
+
+.nav-item:hover {
+    background-color: lightgrey;
+}
+
+hr {
+    border-top: 6px solid #006600;
+}
+
+div {
+    text-align: center;
+}
+
+h1 {
+    margin: 20px;
+}
+
+li {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+    color: #6B8E23;
+}
+
+a:hover {
+    color: #3d5214;
+}
+
+form {
+    margin-top: 20px;
+    
+}
+
+input {
+    margin: auto;
+    border-radius: 8px;
+}
+
+label,input{
+    display:block;
+}
+
+select {
+    width:15%;
+}
+
+button {
+    margin: 10px;
+}
+
+ #my-recipes {
+    text-align: left;
+    margin-left: 2.5em;
+}
+
+#cal-calc { 
+   margin-top: 20px;
+   text-decoration: none;
+}
+
+#user-name {
+    text-align: left;
+}
+

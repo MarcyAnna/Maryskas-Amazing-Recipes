@@ -79,13 +79,13 @@ class Recipe(db.Model):
 
     user_id = db.Column(
         db.Integer,
-        db.ForeignKey('users.id'),
+        db.ForeignKey('users.id', ondelete="cascade"),
         nullable=False,
     )
 
     category_id = db.Column(
         db.Integer,
-        db.ForeignKey('categories.id')
+        db.ForeignKey('categories.id', ondelete="cascade")
     )
 
     rating_id = db.Column(
@@ -126,6 +126,8 @@ class Category(db.Model):
     )
 
     users = db.relationship('User', foreign_keys=[user_id])
+
+ 
 
 
 

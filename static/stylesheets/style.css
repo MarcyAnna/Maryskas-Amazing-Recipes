@@ -4,18 +4,20 @@ body {
 }
 
 .navbar {
-    background-color: #dfdbb9;
+    background-color: #fcfa91;
     padding: 10px 30px 10px;
 }
 
 .navbar-brand {
+    color:   #33cc00;
     font-weight: bold;
     font-size: 2rem;
     padding:10px;
 }
 
 .navbar-brand:hover {
-    background-color: lightgrey;
+    color: whitesmoke;
+    background-color: orange;
 }
 
 .nav-item {
@@ -23,11 +25,13 @@ body {
 }
 
 .nav-item:hover {
-    background-color: lightgrey;
+    color: whitesmoke;
+    background-color: orange;
 }
 
 hr {
-    border-top: 6px solid #006600;
+    border-top: 6px solid darkorange;
+    font-family: Copperplate, fantasy;
 }
 
 div {
@@ -35,25 +39,45 @@ div {
 }
 
 h1 {
+    color: #994c33;
     margin: 20px;
+}
+
+h4 {
+    color: #994c33;
+}
+
+h5 {
+    color:  #a34729;
+    margin: 15px;
+}
+
+p {
+    margin: 15px;
+    color: #006900;
 }
 
 li {
     list-style: none;
+    font-weight: bold;
+    color: #994c33;
 }
 
 a {
     text-decoration: none;
-    color: #6B8E23;
+    color: #303600;
 }
 
 a:hover {
-    color: #3d5214;
+    color: #006900;
+}
+
+a p:hover {
+    color: black;
 }
 
 form {
-    margin-top: 20px;
-    
+    margin-top: 20px;   
 }
 
 input {
@@ -63,10 +87,14 @@ input {
 
 label,input{
     display:block;
+    color: #006900;
 }
 
 select {
     width:15%;
+    background-color: white;
+    border-radius: 8px;
+    color: #006900;
 }
 
 button {
@@ -85,5 +113,10 @@ button {
 
 #user-name {
     text-align: left;
+}
+
+#cal {
+    font-size: 1.3em;
+    color:  #a34729;
 }
 

@@ -70,6 +70,12 @@ class Recipe(db.Model):
     id = db.Column(
         db.Integer,
         primary_key=True,
+        autoincrement=True,
+    )
+
+    recipe_id = db.Column(
+        db.Integer,
+        nullable=False
     )
 
     name = db.Column(
@@ -88,16 +94,16 @@ class Recipe(db.Model):
         db.ForeignKey('categories.id', ondelete="cascade")
     )
 
-    rating_id = db.Column(
-        db.Integer,
-        db.ForeignKey('ratings.id')
-    )
+    # rating_id = db.Column(
+    #     db.Integer,
+    #     db.ForeignKey('ratings.id')
+    # )
 
     users = db.relationship('User', foreign_keys=[user_id])
 
     categories = db.relationship('Category', foreign_keys=[category_id])
 
-    ratings = db.relationship('Rating', foreign_keys=[rating_id])
+    # ratings = db.relationship('Rating', foreign_keys=[rating_id])
 
 class Category(db.Model):
     """Category Model for user to create a specific category to save recipes under"""
@@ -131,41 +137,41 @@ class Category(db.Model):
 
 
 
-class Rating(db.Model):
-    """Rating Model for user to give feedback on a recipe"""
+# class Rating(db.Model):
+#     """Rating Model for user to give feedback on a recipe"""
 
-    __tablename__ = 'ratings'
+#     __tablename__ = 'ratings'
 
-    id = db.Column(
-        db.Integer,
-        primary_key=True,
-        autoincrement=True,
-    )
+#     id = db.Column(
+#         db.Integer,
+#         primary_key=True,
+#         autoincrement=True,
+#     )
 
-    rating_stars = db.Column(
-        db.Integer,
-        nullable=False
-    )
+#     rating_stars = db.Column(
+#         db.Integer,
+#         nullable=False
+#     )
 
-    comment = db.Column(
-        db.Text
-    )
+#     comment = db.Column(
+#         db.Text
+#     )
 
-    user_id = db.Column(
-        db.Integer,
-        db.ForeignKey('users.id'),
-        nullable=False
-    )
+#     user_id = db.Column(
+#         db.Integer,
+#         db.ForeignKey('users.id'),
+#         nullable=False
+#     )
 
-    recipe_id = db.Column(
-        db.Integer,
-        db.ForeignKey('recipes.id'),
-        nullable=False
-    ) 
+#     recipe_id = db.Column(
+#         db.Integer,
+#         db.ForeignKey('recipes.id'),
+#         nullable=False
+#     ) 
 
-    users = db.relationship('User', foreign_keys=[user_id])
+#     users = db.relationship('User', foreign_keys=[user_id])
 
-    recipes = db.relationship('Recipe', foreign_keys=[recipe_id])
+#     recipes = db.relationship('Recipe', foreign_keys=[recipe_id])
 
 # class Category_Recipes(db.Model):
 #     """Joins the recipes with the category they fall under"""

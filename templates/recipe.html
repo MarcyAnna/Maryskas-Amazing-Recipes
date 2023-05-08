@@ -5,6 +5,7 @@
 {% block content %}
 
 <h1>{{ recipe_title }}</h1>
+<h5>Calories per serving: {{ cal }}</h5>
 <hr>
 {% for ingredient in ingredients %}
 <ul>
@@ -12,7 +13,6 @@
 </ul>
 {% endfor %}
 <h4>See full recipe at <a href="https://{{ sourceUrlSplit }}" target="_blank">{{ sourceUrl }}</a></h4>
-<h5>Calories per serving: {{ cal }}</h5>
 
 
 <a href='/user'>Back</a>

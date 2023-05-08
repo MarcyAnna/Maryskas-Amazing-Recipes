@@ -4,7 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from flask_migrate import Migrate
 
 from forms import UserAddForm, LoginForm, CreateCategory
-from models import db, connect_db, User, Recipe, Category, Rating
+from models import db, connect_db, User, Recipe, Category
 
 from secretkey import API_SECRET_KEY
 
@@ -20,7 +20,6 @@ app.app_context().push()
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///recipes'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# app.config['SQLALCHEMY_ECHO'] = True
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 app.config['SECRET_KEY'] = "1234567890"
 toolbar = DebugToolbarExtension(app)
@@ -71,8 +70,9 @@ def save_recipe():
         user = User.query.get(session['curr_user'])
         data = session['curr_recipe']
         recipe = Recipe(
-            id = data["results"][0]["id"],
-            name = data["results"][0]["title"]
+            recipe_id = data["results"][0]["id"],
+            name = data["results"][0]["title"],
+            user_id = user.id
         )
         user.recipes.append(recipe)
         db.session.commit()
@@ -82,16 +82,6 @@ def save_recipe():
     else:
         flash('Please Login To Save Recipe!')
         return render_template('homepage.html')
-
-# @app.route('/<int:recipe_id>/delete', methods=['POST'])
-# def delete_recipe(recipe_id):
-#     """User delete recipe"""
-
-#     recipe = Recipe.query.get(recipe_id)
-#     db.session.delete(recipe)
-#     db.session.commit()
-
-#     return redirect("/user")
 
 # User routes
 @app.route('/signup', methods=["GET", "POST"])
@@ -145,6 +135,7 @@ def logout():
 
 @app.route('/user')
 def user_page():
+    """Show User saved recipes"""
 
     user = User.query.get(session['curr_user'])
 
@@ -157,6 +148,21 @@ def calc_cal():
     user = User.query.get(session['curr_user'])
 
     return render_template("caloriecalculator.html", user=user)
+
+@app.route('/savecalories', methods=['GET', 'POST'])
+def save_cal():
+    """Save calorie to user account"""
+  
+    user = User.query.get(session['curr_user'])
+    cal = request.form["kcal"]
+    user.id = user.id
+    user.username = user.username
+    user.password = user.password
+    user.daily_kcal = cal
+    
+    db.session.commit()
+    return redirect('/user')
+
 
 # recipe/category routes
 @app.route('/addcategory', methods=['GET', 'POST'])
@@ -193,9 +199,10 @@ def add_recipe_to_cat(category_id):
 
     user = User.query.get(session['curr_user'])
     cat = Category.query.get(category_id)
-    recipe_id = request.args.get('recipe_cat')
-    recipe = Recipe.query.get(recipe_id)
+    recipeId = request.args.get('recipe_cat')
+    recipe = Recipe.query.get(recipeId)
     recipe.id = recipe.id
+    recipe.recipe_id = recipe.recipe_id
     recipe.name = recipe.name
     recipe.user_id = recipe.user_id
     recipe.category_id = category_id

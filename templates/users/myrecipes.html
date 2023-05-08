@@ -10,7 +10,7 @@
         <div class="col" id="cal-calc">
             <a href="/calories">Factor Your Daily Caloric Needs</a>
             {% if user.daily_kcal %}
-            <p>Your recommended daily calories: {{ user.daily_kcal }}</p>
+            <p id="cal">Your recommended daily calories: {{ user.daily_kcal }}</p>
             {% endif %}
         </div>
 
@@ -22,10 +22,11 @@
                     <h4 class="fw-bolder">My Recipes</h4>
                     {% if user.recipes %}
                     {% for recipe in user.recipes %}
-                    <a href="/{{ recipe.id }}">
+                    {% if recipe.category_id == None %}
+                    <a href="/{{ recipe.recipe_id }}">
                         <p>{{ recipe.name }}</p>
                     </a>
-
+                    {% endif %}
                     {% endfor %}
                     {% endif %}
                 </div>
@@ -37,7 +38,7 @@
                     <h5 class="text-decoration-underline">{{ category.name }}</h5>
                     {% for recipe in user.recipes %}
                     {% if category.id == recipe.category_id %}
-                    <a href="/{{ recipe.id }}">
+                    <a href="/{{ recipe.recipe_id }}">
                         <p>{{ recipe.name }}</p>
                     </a>
                     {% endif %}
@@ -48,12 +49,12 @@
                             <option value="{{ recipe.id }}">{{ recipe.name }}</option>
                             {% endfor %}
                         </select>
-                        <button class='btn btn-secondary btn-sm'>Submit</button>
+                        <button class='btn btn-success btn-sm'>Submit</button>
                     </form>
                     <form id="delete_category" method="POST" action="/{{ category.id }}/delete">
                         <p class="text-danger" onclick="deleteCategory()"><i class="fa fa-trash"
-                                aria-hidden="true">Warning:
-                                Recipes in category will also be deleted</i>
+                                aria-hidden="true"> Warning:
+                                Deleting Category Will Also Delete Recipes In Category</i>
                         </p>
                     </form>
                     {% endfor %}

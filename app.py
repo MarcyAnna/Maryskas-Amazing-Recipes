@@ -8,13 +8,15 @@ from flask_migrate import Migrate
 from forms import UserAddForm, LoginForm, CreateCategory
 from models import db, connect_db, User, Recipe, Category
 
-from secretkey import API_SECRET_KEY
+# from secretkey import API_SECRET_KEY
 
 import requests 
 
 API_BASE_URL = "https://api.spoonacular.com/recipes"
 
-apiKey = API_SECRET_KEY
+# apiKey = API_SECRET_KEY
+# for render, API key is in secret storage in app deploy configuration
+apiKey = os.environ.get('RECIPE_API_KEY')
 
 app = Flask(__name__)
 

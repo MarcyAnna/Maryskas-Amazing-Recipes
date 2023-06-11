@@ -133,9 +133,6 @@ class Category(db.Model):
 
     users = db.relationship('User', foreign_keys=[user_id])
 
- 
-
-
 
 # class Rating(db.Model):
 #     """Rating Model for user to give feedback on a recipe"""

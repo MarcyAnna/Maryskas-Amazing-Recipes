@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask, redirect, render_template, request, session, g, flash
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
@@ -18,11 +20,13 @@ app = Flask(__name__)
 
 app.app_context().push()
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///recipes'
+app.config['SQLALCHEMY_DATABASE_URI'] = (
+    os.environ.get('DATABASE_URL', 'postgresql:///recipes'))
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///recipes'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 app.config['SECRET_KEY'] = "1234567890"
-toolbar = DebugToolbarExtension(app)
+# toolbar = DebugToolbarExtension(app)
 
 connect_db(app)
 migrate = Migrate(app, db)
@@ -56,11 +60,19 @@ def show_recipe():
     res = requests.get(f"{API_BASE_URL}/complexSearch", params={'apiKey': apiKey, 'query': recipe, 'diet': diet, 'instructionsRequired': True, 'number': 1})
     data = res.json()
     session['curr_recipe'] = data
-    recipe_title = data["results"][0]["title"]
-    recipe_id = data["results"][0]["id"]
-    recipe_image = data["results"][0]["image"]
-    
-    return render_template('homepage.html', recipe_title = recipe_title, recipe_id = recipe_id, recipe_image = recipe_image, user = user)
+
+    if data["totalResults"] == 0:
+        flash('No recipes found matching your search. Please try again!')
+        return render_template('homepage.html', user=user)
+
+    else:
+        recipe_title = data["results"][0]["title"]
+        recipe_id = data["results"][0]["id"]
+        recipe_image = data["results"][0]["image"]
+        return render_template('homepage.html', recipe_title = recipe_title, recipe_id = recipe_id, recipe_image = recipe_image, user = user)
+
+
+   
 
 @app.route('/saverecipe')
 def save_recipe():

@@ -68,7 +68,6 @@ def show_recipe():
             diet = form.diet.data
             print(recipe, diet)
             res = requests.get(f"{API_BASE_URL}/complexSearch", params={'apiKey': apiKey, 'query': recipe, 'diet': diet, 'instructionsRequired': True, 'number': 1})
-            res=""
             print(res)
             data = res.json()
             session['curr_recipe'] = data

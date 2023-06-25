@@ -52,14 +52,15 @@ def homepage():
 @app.route('/result', methods=['GET', 'POST'])
 def show_recipe():
     """show recipe search result"""
-
+    print(session)
     if 'curr_user' in session:
         user = User.query.get(session['curr_user'])
-
+    print(user)
     else:
         user = None 
 
     form = RecipeForm()
+    print(form)
     print(apiKey)
     if form.validate_on_submit():
         try:

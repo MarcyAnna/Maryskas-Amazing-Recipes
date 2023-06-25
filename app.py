@@ -55,10 +55,9 @@ def show_recipe():
     print(session)
     if 'curr_user' in session:
         user = User.query.get(session['curr_user'])
-    print(user)
     else:
         user = None 
-
+    print(user)
     form = RecipeForm()
     print(form)
     print(apiKey)

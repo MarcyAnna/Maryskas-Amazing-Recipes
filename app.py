@@ -52,16 +52,14 @@ def homepage():
 @app.route('/result', methods=['GET', 'POST'])
 def show_recipe():
     """show recipe search result"""
-
     if 'curr_user' in session:
         user = User.query.get(session['curr_user'])
-
     else:
         user = None 
-
     form = RecipeForm()
-
+   
     if form.validate_on_submit():
+    
         try:
             recipe = form.recipe.data
             diet = form.diet.data

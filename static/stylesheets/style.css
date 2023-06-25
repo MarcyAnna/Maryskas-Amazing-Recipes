@@ -53,7 +53,7 @@ h5 {
 }
 
 p {
-    margin: 15px;
+    margin: 20px;
     color: #006900;
 }
 
@@ -82,7 +82,7 @@ form {
 
 input {
     margin: auto;
-    border-radius: 8px;
+    border-radius: 10px;
 }
 
 label,input{
@@ -91,7 +91,7 @@ label,input{
 }
 
 select {
-    width:15%;
+    width:25%;
     background-color: white;
     border-radius: 8px;
     color: #006900;

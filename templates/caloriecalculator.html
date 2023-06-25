@@ -7,6 +7,9 @@
 <hr>
 <p>Let's figure out how many calories you need each day to maintain your current weight at your current activity level.
 </p>
+{% for message in get_flashed_messages() %}
+<h2 class="text-danger">{{ message }}</h2>
+{% endfor %}
 <h5>First Calculate Your BMR</h5>
 <p>This is your Basal Metabolic Rate, the amount of calories your body needs to keep functioning. </p>
 <form action="" id="calc-cal">

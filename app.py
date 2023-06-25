@@ -5,7 +5,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 from flask_migrate import Migrate
 
-from forms import UserAddForm, LoginForm, CreateCategory
+from forms import UserAddForm, LoginForm, CreateCategory, RecipeForm
 from models import db, connect_db, User, Recipe, Category
 
 # from secretkey import API_SECRET_KEY
@@ -42,12 +42,14 @@ def homepage():
         user = User.query.get(session['curr_user'])
 
     else:
-        user = None    
+        user = None   
 
-    return render_template("homepage.html", user=user)
+    form = RecipeForm() 
+
+    return render_template("homepage.html", user=user, form=form)
 
 
-@app.route('/result')
+@app.route('/result', methods=['GET', 'POST'])
 def show_recipe():
     """show recipe search result"""
 
@@ -57,24 +59,31 @@ def show_recipe():
     else:
         user = None 
 
-    recipe = request.args['recipe']
-    diet = request.args['diet']
-    res = requests.get(f"{API_BASE_URL}/complexSearch", params={'apiKey': apiKey, 'query': recipe, 'diet': diet, 'instructionsRequired': True, 'number': 1})
-    data = res.json()
-    session['curr_recipe'] = data
+    form = RecipeForm()
 
-    if data["totalResults"] == 0:
-        flash('No recipes found matching your search. Please try again!')
-        return render_template('homepage.html', user=user)
+    if form.validate_on_submit():
+        try:
+            recipe = form.recipe.data
+            diet = form.diet.data
+            res = requests.get(f"{API_BASE_URL}/complexSearch", params={'apiKey': apiKey, 'query': recipe, 'diet': diet, 'instructionsRequired': True, 'number': 1})
+            data = res.json()
+            session['curr_recipe'] = data
 
-    else:
-        recipe_title = data["results"][0]["title"]
-        recipe_id = data["results"][0]["id"]
-        recipe_image = data["results"][0]["image"]
-        return render_template('homepage.html', recipe_title = recipe_title, recipe_id = recipe_id, recipe_image = recipe_image, user = user)
+            if data["totalResults"] == 0:
+                flash('No recipes found.', 'danger')
+                return redirect('/')
+
+            else:
+                recipe_title = data["results"][0]["title"]
+                recipe_id = data["results"][0]["id"]
+                recipe_image = data["results"][0]["image"]
+                return render_template('homepage.html', recipe_title = recipe_title, recipe_id = recipe_id, recipe_image = recipe_image, user = user, form=form)
+            
+        except IntegrityError:
+            flash("Please Enter Valid Search", 'danger')
+            return redirect('/')
 
 
-   
 
 @app.route('/saverecipe')
 def save_recipe():
@@ -91,6 +100,8 @@ def save_recipe():
         user.recipes.append(recipe)
         db.session.commit()
         session.pop('curr_recipe', None)
+        flash('Recipe Saved!', 'success')
+        flash('Go to your user page to see details of all your saved recipes')
         return redirect('/')
 
     else:
@@ -173,9 +184,14 @@ def save_cal():
     user.username = user.username
     user.password = user.password
     user.daily_kcal = cal
-    
-    db.session.commit()
-    return redirect('/user')
+
+    if int(cal) > 500 and int(cal) < 5000:
+        db.session.commit()
+        return redirect('/user')
+
+    else:
+        flash('Invalid results for calorie count. Please check your entries and reenter correct information', 'danger')
+        return render_template("caloriecalculator.html", user=user)
 
 
 # recipe/category routes

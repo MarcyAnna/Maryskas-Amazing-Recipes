@@ -1,9 +1,7 @@
 {% extends 'base.html' %}
 
 
-
 {% block content %}
-
 
 <h1>Recipe Search
 </h1>
@@ -11,33 +9,28 @@
 <h3>Find recipes to fit your lifestyle and diet!</h3>
 <h5>Are you looking for an easy dinner?</h5>
 <p> Or perhaps trying out a Keto diet and need some ideas? Maybe find something to do with that random eggplant?</p>
-<h5>Find them all here!</h5>
+<h5>Find it here!</h5>
 {% for message in get_flashed_messages() %}
-<h2 class="text-danger">{{ message }}</h2>
+<h3 class="text-danger">{{ message }}</h3>
 {% endfor %}
-<form action='/result'>
-<div class='mb-4'>
-    <label for='recipe'>What would you like a recipe for?</label>
-    <input type='text' name='recipe' placeholder="search for...">
-</div>
-<div class='mb-4'>
-    <label for='diet'>Choose a specialized diet:</label>
-<select id='diet' name='diet'>
-    <option value="none">None</option>
-    <option value="gluten-free">Gluten Free</option>
-    <option value="ketogenic">Keto</option>
-    <option value="Vegetarian">Vegetarian</option>
-    <option value="vegan">Vegan</option>
-    <option value="paleo">Paleo</option>
-    <option value="low-fodmap">Low FODMAP</option>
-</select>
-</div>
-<div class='mb-3'>
-    <button class='btn btn-success btn-sm'>Submit</button>
-</div>
-</form>
+<div class="row justify-content-md-center">
+    <div class="col-md-7 col-lg-5">
+      <form method='post' action='/result'>
+        {{ form.hidden_tag() }}
+  
+        {% for field in form if field.widget.input_type != 'hidden' %}
+          {% for error in field.errors %}
+            <span class="text-danger">{{ error }}</span>
+          {% endfor %}
+          {{ field(placeholder=field.label.text, class="form-control") }}
+        {% endfor %}
+  
+        <button class="btn btn-secondary btn-sm">Submit</button>
+      </form>
+    </div>
+  </div>
 {% if recipe_title %}
-<p>{{ recipe_title }}</p>
+<h2>{{ recipe_title }}</h2>
 <img src="{{ recipe_image }}" alt="recipe image">
 <form action='/saverecipe'>
     <button class='btn btn-success btn-sm'>Save Recipe</button>

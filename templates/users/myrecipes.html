@@ -6,6 +6,7 @@
     <div class="row">
         <div class="col" id="user-name">
             <h1 class="fw-bold">{{ user.username }}</h1>
+            <a href="/"><p>Back to Homepage</p></a>
         </div>
         <div class="col" id="cal-calc">
             <a href="/calories">Factor Your Daily Caloric Needs</a>
@@ -20,6 +21,7 @@
 
                 <div class="col" id="my-recipes">
                     <h4 class="fw-bolder">My Recipes</h4>
+                    <h6>(Click on Recipe to View Details)</h6>
                     {% if user.recipes %}
                     {% for recipe in user.recipes %}
                     {% if recipe.category_id == None %}
@@ -44,6 +46,7 @@
                     {% endif %}
                     {% endfor %}
                     <form action='/{{ category.id }}/addrecipe'>
+                        <label for='recipe_cat'>Add a recipe to your category</label>
                         <select id="recipe_cat" name="recipe_cat">
                             {% for recipe in user.recipes %}
                             <option value="{{ recipe.id }}">{{ recipe.name }}</option>
@@ -53,7 +56,7 @@
                     </form>
                     <form id="delete_category" method="POST" action="/{{ category.id }}/delete">
                         <p class="text-danger" onclick="deleteCategory()"><i class="fa fa-trash"
-                                aria-hidden="true"> Warning:
+                                aria-hidden="true">
                                 Deleting Category Will Also Delete Recipes In Category</i>
                         </p>
                     </form>

@@ -62,9 +62,12 @@ def show_recipe():
     print(form)
     print(apiKey)
     if form.validate_on_submit():
+        print("form valid")
         try:
+            print("inside try")
             recipe = form.recipe.data
             diet = form.diet.data
+            print(recipe, diet)
             res = requests.get(f"{API_BASE_URL}/complexSearch", params={'apiKey': apiKey, 'query': recipe, 'diet': diet, 'instructionsRequired': True, 'number': 1})
             print(res)
             data = res.json()

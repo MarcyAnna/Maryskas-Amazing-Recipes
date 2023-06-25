@@ -60,12 +60,13 @@ def show_recipe():
         user = None 
 
     form = RecipeForm()
-
+    print(apiKey)
     if form.validate_on_submit():
         try:
             recipe = form.recipe.data
             diet = form.diet.data
             res = requests.get(f"{API_BASE_URL}/complexSearch", params={'apiKey': apiKey, 'query': recipe, 'diet': diet, 'instructionsRequired': True, 'number': 1})
+            print(res)
             data = res.json()
             session['curr_recipe'] = data
 

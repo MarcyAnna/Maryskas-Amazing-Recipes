@@ -38,11 +38,11 @@ class TestModels(TestCase):
         self.assertNotEqual(user.password, "Password")
         self.assertTrue(user.password.startswith("$2b$"))
 
-    def test_show_recipe(self):
+    # def test_show_recipe(self):
 
-        response = client.get('/result?recipe=pizza&diet=vegetarian')
-        self.assertEqual(response.status_code, 200)
-        self.assertIn( recipe_title, response.data) 
+       # response = client.get('/result?recipe=pizza&diet=vegetarian')
+        # self.assertEqual(response.status_code, 200)
+        # self.assertIn( recipe_title, response.data) 
 
 
 

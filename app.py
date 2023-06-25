@@ -52,15 +52,14 @@ def homepage():
 @app.route('/result', methods=['GET', 'POST'])
 def show_recipe():
     """show recipe search result"""
-    print(session)
     if 'curr_user' in session:
         user = User.query.get(session['curr_user'])
     else:
         user = None 
-    print(user)
     form = RecipeForm()
     print(form)
     print(apiKey)
+    print(form.validate_on_submit())
     if form.validate_on_submit():
         print("form valid")
         try:
@@ -69,6 +68,7 @@ def show_recipe():
             diet = form.diet.data
             print(recipe, diet)
             res = requests.get(f"{API_BASE_URL}/complexSearch", params={'apiKey': apiKey, 'query': recipe, 'diet': diet, 'instructionsRequired': True, 'number': 1})
+            res=""
             print(res)
             data = res.json()
             session['curr_recipe'] = data

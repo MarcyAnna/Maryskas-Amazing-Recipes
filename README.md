@@ -34,3 +34,8 @@ Link to Spoonacular docs - [https://spoonacular.com/food-api](https://spoonacula
     - return to mainpage to search for more recipes
 - Log out (website will keep user logged in locally if network tab still open) 
 
+##### Testing
+- Utilizes Flask unittest
+- Create a separate postgresql database for running the tests - database name "recipes_test"
+- To run tests in the command line, make sure to export the RECIPE_API_KEY 
+- Run "python -m unittest test_app.py" to run tests

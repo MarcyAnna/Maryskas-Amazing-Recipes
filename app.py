@@ -57,9 +57,7 @@ def show_recipe():
     else:
         user = None 
     form = RecipeForm()
-   
     if form.validate_on_submit():
-    
         try:
             recipe = form.recipe.data
             diet = form.diet.data
